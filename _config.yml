@@ -1,0 +1,54 @@
+title: DJI Developer Documentation
+description:
+author:
+language:
+  - en
+  - cn
+i18n_dir: :lang
+timezone: UTC
+url: "//developer.dji.com/"
+root: /
+permalink: :title/
+default_layout: page
+highlight:
+  enable: true
+  line_number: false
+  tab_replace: true
+
+host:
+  production: '//developer.dji.com'
+  staging: '//developer.dbeta.me'
+api_host:
+  production: '//dev.dji.com'
+  staging: '//api-developer.dbeta.me'
+sdk: "guidance-sdk"
+
+theme: dji-doc
+
+markdown:
+  render:
+    html: true
+  anchors:
+    level: 2
+    # collisionSuffix: 'v'           
+    permalink: false
+    # permalinkClass: header-anchor 
+
+node_sass:
+  outputStyle: nested
+  precision: 5
+  sourceComments: false
+
+jade:
+  pretty: true
+
+uglify:
+  mangle: true
+
+clean_css:
+  exclude:
+
+html_minifier:
+  exclude:
+
+

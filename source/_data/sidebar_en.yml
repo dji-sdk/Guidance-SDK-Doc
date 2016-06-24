@@ -1,0 +1,32 @@
+- 
+  title: Quick Start
+  list:
+    -
+      title: Get Started
+      path: /quick-start/index.html
+      
+    -
+      title: Run examples
+      path: /application-development-guides/run-examples.html  
+-
+  title: INTRODUCTION
+  list:
+    -
+      title: Guidance SDK Reference
+      path: /introduction/index.html
+
+-
+  title: APPLICATION DEVELOPMENT GUIDES
+  list:
+    -
+      title: Guidance SDK Developer Guide
+      path: /application-development-guides/index.html    
+
+-
+  title: Tutorials
+
+  list:
+    -
+      title: Building a Visual Tracking Project
+      path: /tutorials/index.html
+
