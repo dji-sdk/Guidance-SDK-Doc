@@ -9,7 +9,7 @@ Official Guidance SDK package for accessing the rich categories of output data f
 
 　[Developer Guide](../application-development-guides/index.html)
 
-　[Run Example](../application-development-guides/run-examples.html)
+　[Run Example](../quick-start/run-examples.html)
 
 　[Building a Visual Tracking Project](../tutorials/index.html)
 

@@ -3,76 +3,75 @@ title: Guidance SDK Reference
 date: 2016-06-24
 ---
 
-## Background
+## 背景
 
-This document gives detailed explanation on the SDK structure and API functions. We assume that you have
+此文档提供了关于SDK的结构和API函数的详细解释。我们假设你有
 
-- a Guidance system,
-- a computer with OpenCV installed,
+- 一个Guidance系统，
+- 一台安装了OpenCV的计算机
 
-and you are:
+并且你:
 
-- familiar with Linux programming,
-- or familiar with Windows programming and Microsoft Visual Studio.
+- 熟悉Linux编程，
+- 或者熟悉Windows编程和Microsoft Visual Studio使用。
 
-## Introduction
+## 简介
 
-This section introduces the structure of the Guidance SDK. The SDK is divided into three layers:
+本节介绍指导SDK的结构。该SDK分为三个层次:
 
 ![](../../images/guidance-sdk-api/Guidance_SDK_API3987.png)
 
-- **Application:** This layer processes data from the HAL layer. It is written by developers.
-- **HAL:** Hardware Abstraction Layer. This layer packs/parses the data to/from the Driver layer. It is implemented by the sample code (for UART) or SDK library (for USB), e.g. _libDJI\_guidance.so_.
-- **Driver:** This layer receives data from the Guidance system through USB/UART. It is implemented by OS or 3rd party libraries, e.g. _libusb_.
+- **应用:** 该层处理由HAL层传来的数据，由开发者编写。
+- **HAL:** 硬件抽象层。该层打包/解析从驱动层传来的数据，由示例代码实现（串口）SDK库（用于USB）实现，例如*libDJI_guidance.so*。
+- **驱动:** 该层通过USB或者串口从Guidance接收数据，由操作系统或第三方库（如_libusb_）实现。
 
-### Interface
+### 接口
 
-The Guidance SDK supports two communication protocols: USB & UART.
+Guidance SDK支持两种通信协议:USB和串口。
 
 #### 1. USB
 
-The supported data types are Velocity Data, Obstacle Distance Data, IMU Data, Ultrasonic Data, Greyscale Image, and Depth Image.
+支持的数据类型包括速度数据，障碍物距离数据，IMU数据，超声波数据，灰度图像和深度图像。
 
-There are two ways to subscribe the data through USB.
+有两种方法可以通过USB订阅数据。
 
-1. Guidance Assistant Software
+1. Guidance Assist软件
 
-	User can use Guidance assistant software to subscribe the data in "DIY->API->USB" tab.
+    用户可以使用Guidance Assist软件中的“DIY-> API - > USB”选项卡来订阅数据。
 
-	- Connect Guidance with PC using USB cable, power on the Guidance
-	- Choose the "Enable" check box
-	- Choose the data according your requirement
+    - 使用USB线连接Guidance和PC，将Guidance上电
+    - 选择“启用”复选框
+    - 根据您的需求选择数据
 
-	**Notes:** The available bandwidth is subject to the selection of image data and the output frequency. The selection of subscribed image data and output frequency will be saved and take effect when the Guidance system is turned off and on again.
+    **注:** 可用带宽是受制于选择的图像数据和输出频率。订阅图像数据和输出频率的选择将被保存在Guidance系统上，并在Guidance下一次启动时生效。
 
-	![](../../images/guidance-sdk-api/Guidance_SDK_API5146.png)
+    ![](../../images/guidance-sdk-api/Guidance_SDK_API5146.png)
 
 2. Guidance API
 
-	User can subscribe the data using Guidance API. Identity these API functions that are named with "select".
+    用户可以通过Guidance API订阅数据，这些API函数的名字都以"select"开头。
 
-	**Notes:** If user subscribes the image data and output frequency using Guidance API functions, it will only temporarily override the data selection that is made in the Guidance Assistant software when the Guidance system is still powered on. However, the data selection that is made through the Guidance API will not permanently change the data subsections options stored in the Guidance system, unless you de-select the "Enable" option in the "USB" tab.
+    **注:** 如果用户通过Guidance API函数来订阅图像数据和输出频率，它只会在Guidance上电期间临时生效，Guidance断电后将恢复到Guidance Assist设置的状态。
 
-#### 2. UART
+#### 2. 串口
 
-The output data types of UART are Velocity Data, Obstacle Distance Data, IMU Data, and Ultrasonic Data. Image data are not output via UART due to the bandwidth limit.
+串口的输出数据类型包括速度数据，障碍物距离数据，IMU数据和超声波数据。由于带宽限制，图像数据不通过UART输出。
 
-**Note:** Guidance UART only supports **115200** baud rate.
+**注:** Guidance串口目前只支持**115200**波特率。
 
-1. Subscribe Data
+1. 订阅数据
 
-	You may only use Guidance assistant software to subscribe UART data. Enable this selection from "DIY->API->UART" page. Same as USB, the configuration will be saved in Guidance Core, unless you de-select the "Enable" option in the "UART" tab.
+    您只能使用Guidance Assist软件订阅UART数据。从“DIY-> API - > UART”页面启用串口。与USB相同，该配置将被保存在Guidance系统上，除非你在“UART”选项卡中取消选择“启用”选项。
+    ![](../../images/guidance-sdk-api/Guidance_SDK_API6086.png)
 
-	![](../../images/guidance-sdk-api/Guidance_SDK_API6086.png)
+2. 协议说明
 
-2. Protocol Description
-
-	Protocol Frame Format:
+    协议帧格式:
 
 | SOF | LEN | VER | RES | SEQ | CRC16 | DATA | CRC32 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 
-Protocol Frame Explanation:
+协议帧解释:
 
 | Field | Byte Index | Size（bit） | Description |
 | --- | --- | --- | --- |
@@ -85,16 +84,16 @@ Protocol Frame Explanation:
 | DATA | 12 | --① | Frame data, maximum length  1007 bytes |
 | CRC32 | --② | 32 | Frame CRC32 checksum |
 
-① Frame data size can vary, 1007 is the maximum length.
+① 帧数据大小是可变的，最大为1007字节。
 
-② The index of this field depends on the length of the data field.
+② 该域的索引取决于数据域的长度。
 
-Data Field Format:
+数据域格式:
 
 | COMMAND SET | COMMAND ID | COMMAND DATA |
 | --- | --- | --- |
 
-Data Field Explanation:
+数据域解释:
 
 | Data Field | Byte Index | Size（byte） | Description |
 | --- | --- | --- | --- |
@@ -102,198 +101,197 @@ Data Field Explanation:
 | COMMAND ID | 1 | 1 | e\_image: 0x00; e\_imu: 0x01; e\_ultrasonic: 0x02; e\_velocity: 0x03; e\_obstacle\_distance: 0x04 |
 | COMMAND DATA | 2 | -- | Data body |
 
-### Data Types
+### 数据类型
 
-Each of the supported data types is described below.
+支持的数据类型描述如下。
 
-- [**Error Code**](#e-sdk-err-code) enumerates possible error codes. When error occurs, usually an error code will be given, and the developer can reference this enum to find the error type. 
-- [**Velocity Data:**](#velocity) velocity in body frame. The unit is **millimeter/second** and the frequency is 10 Hz.
-- [**Obstacle Distance Data:**](#obstacle-distance) obstacle distance from five Guidance Sensors. The unit is **centimeter** and the frequency is 20 Hz.
-- [**IMU Data:**](#imu-data) IMU data including accelerometer (in unit of acceleration of gravity **g**) and gyroscope (in quaternion format) data. The frequency is 20 Hz.
-- [**Motion Data:**](#motion-data) Pose and velocity data including quaternion orientation, position in the global frame, velocity in the global frame.
-- [**Ultrasonic Data:**](#ultrasonic-data) Outputs ultrasonic data from five Guidance Sensors, including obstacle distance (in unit of **meter**) and reliability of the data. The frequency is 20 Hz.
-- [**Greyscale Image:**](#image-data) Outputs Greyscale images for five directions. The image size is 320\*240 bytes for individual sensor. The default frequency is 20 Hz and can be scaled down using API functions.
-- [**Depth Image:**](#image-data) Outputs depth images for five directions. The image size is 320\*240\*2 bytes for each direction. The default frequency is 20 Hz and can be scaled down using API functions.  
-- [**Disparity Image:**](#image-data) Outputs disparity images for five directions. This data is useful when developers want to further refine the disaprity images using functions like speckle filter. The image size is 320\*240\*2 bytes for each direction. The default frequency is 20 Hz and can be scaled down using API functions.  
+- [**错误码:**](#e-sdk-err-code) 列举可能的错误代码。当错误发生时，通常会返回一个错误码，而开发者可以参考此枚举来检查错误类型。
+- [**速度数据:**](#velocity) 机体坐标下的速度。单位是**毫米每秒**，频率是10 Hz.
+- [**障碍物距离数据:**](#obstacle-distance) 从五个Guidance传感器模块读取的障碍物距离数据。单位是**厘米**，频率是20 Hz.
+- [**IMU数据:**](#imu-data) IMU数据，包括加速度计（单位为重力加速度**g**）和陀螺仪（四元数格式）数据。频率为20 Hz.
+- [**超声波数据:**](#ultrasonic-data) 输出从五个Guidance传感器读取的超声波数据，包括障碍物距离（单位为**米**）和数据的可靠性。频率为20 Hz.
+- [**灰度图像:**](#image-data) 输出五个方向的8比特灰度图像。每张图像分辨率为320\*240. 默认频率为20Hz，可以通过API​​函数降频。
+- [**深度图像:**](#image-data) 输出五个方向的16比特深度图像。每张图像分辨率为320\*240. 默认频率为20Hz，可以通过API​​函数降频。
+- [**视差图像:**](#image-data) 输出五个方向的16比特视差图像。这个数据在开发者想要进一步优化视差图时是有用的，比如用speckle filter等函数优化。每张图像分辨率为320\*240. 默认频率为20Hz，可以通过API​​函数降频。
 
-## Data Structures
+## 数据结构
 
 ### e_sdk_err_code
 
-**Description:**  Define error code of SDK.
+**描述:** 定义SDK的错误代码。
 
 ~~~cpp
 enum e_sdk_err_code
 {
-    e_timeout = -7,         // time out
-    e_libusb_io_err = -1,   // libusb IO error
-    e_OK = 0,               // Succeed with no error
-    e_load_libusb_err=1,    // Load libusb library error
-    e_sdk_not_inited=2,     // SDK software is not ready
-    e_hardware_not_ready=3, // Guidance hardware is not ready
-    e_disparity_not_allowed=4,      // Disparity or depth image is not allowed
-    e_image_frequency_not_allowed=5,  // Image frequency must be one of the enum type e_image_data_frequecy
-    e_config_not_ready=6,           // Config is not ready
-    e_online_flag_not_ready=7,  // Online flag is not ready
-    e_stereo_cali_not_ready = 8,// Stereo calibration parameters are not ready
-    e_max_sdk_err = 100         // maximum number of possible SDK errors
+    e_timeout = -7,						// USB传输超时
+    e_libusb_io_err = -1,				// libusb库IO错误
+    e_sdk_no_err = 0,					// 成功，没有错误
+    e_load_libusb_err=1,				// 加载的libusb库错误
+    e_sdk_not_inited=2,					// SDK软件还没有准备好
+    e_hardware_not_ready=3,				// Guidance硬件还没有准备好
+    e_disparity_not_allowed=4,			// 视差图或深度图不允许被选择
+    e_image_frequency_not_allowed=5,	// 图像频率必须是枚举类型e_image_data_frequecy之一
+    e_config_not_ready=6,				// 配置没有准备好
+    e_online_flag_not_ready=7,			// 在线标志没有准备好 
+    e_stereo_cali_not_ready = 8,    	// 摄像头标定参数没有准备好
+    e_max_sdk_err = 100					// 错误最大数量
 };
 ~~~
 
-**Explanation:** 
+**解释:** 
 
-1. `e_timeout`: time out during USB transfer.
-2. `e_libusb_io_err`: IO error returned by libusb library. This can be caused by physical connection problem of USB.
-3. `e_OK`: Succeed with no error.
-4. `e_load_libusb_err`: Load libusb library error. This is caused by the inappropriate libusb library.
-5. `e_sdk_not_inited`: SDK software is not ready.
-6. `e_hardware_not_ready`: Guidance hardware is not ready.
-7. `e_disparity_not_allowed`: If your Guidance is working in standard mode with obstacle sensing function activated, disparity or depth image is not allowed to select. The reason is, obstacle sensing has its own way to select disparity images. 
-8. `e_image_frequency_not_allowed`: Image frequency must be one of the enum type `e_image_data_frequecy`.
-9. `e_config_not_ready`: Configuration data is not ready. When Guidance is powered on, it takes several seconds (sometimes longer) to initiate, including loading configuration data (including other data) into memory, and sending to application layer (i.e. the SDK software). If the users start SDK application before configuration data is ready, this error will be thrown. Configuration data includes: Guidance working mode, Guidance Sensor online status, stereo calibration parameters, and so on.
-10. `e_online_flag_not_ready`: Online flag is not ready. Guidance system allows users to use any number of sensors, from 1 to 5. We use an array of online status to indicate which sensor are online. If users subscribe data from a sensor that is not online, no data will be returned.
-11. `e_stereo_cali_not_ready`: Stereo calibration parameters are not ready. The calibration parameters are useful for 3D applications. As the images are already rectified, no distortion coefficients are provided, but only coordinates of the principal point `cu, cv`, focal length `focal`, and baseline `baseline`.  
+1. `e_timeout`: USB传输超时。
+2. `e_libusb_io_err`: libusb库IO错误。这可能由USB的连接错误引起。
+3. `e_OK`: 成功，没有错误。
+4. `e_load_libusb_err`: 加载的libusb库错误。这是由于使用了不正确的libusb库。
+5. `e_sdk_not_inited`: SDK软件还没有准备好。
+6. `e_hardware_not_ready`: Guidance硬件还没有准备好。
+7. `e_disparity_not_allowed`: 如果您的Guidance工作在标准模式下，且激活了障碍物感知功能，那么视差图和深度图是不允许被选择的。因为障碍物感知有自己的选择视差图的方法。
+8. `e_image_frequency_not_allowed`: 图像频率必须是枚举类型`e_image_data_frequecy`之一。目前只支持3种传输频率:5Hz, 10Hz, 20Hz.
+9. `e_config_not_ready`: 配置数据没有准备好。Guidance上电时，需要花几秒钟时间（有时更长）来进行初始化，包括加载配置数据到内存，并将数据发送至应用层（即SDK软件）。如果用户在配置数据准备好之前启动了SDK程序，这个错误就会被抛出。配置数据包括:Guidance的工作模式，Guidance传感模块的在线状态，标定参数，等待。
+10. `e_online_flag_not_ready`: 在线标志没有准备好。Guidance系统允许用户使用任意数目的传感模块，从1到5. 我们使用一个在线状态数组来标识哪些传感模块是在线的。如果用户从不在线的传感模块订阅了数据，那么不会有数据传输过来。
+11. `e_stereo_cali_not_ready`: 摄像头标定参数没有准备好。这个参数对三维应用是有用的。因为图像已经是校正过的图像，我们没有提供畸变系数，只提供了:主点坐标`cu, cv`，焦距`focal`，和基线长度`baseline`.  
 
 ### e_vbus_index
 
-**Description:**  Define logical direction of vbus, i.e. the direction of selected Guidance Sensor. Note that they are only defined by the VBUS ports on Guidance Core, not by the Guidance Sensors. 
+**描述:** 定义VBUS的逻辑方向，即Guidance传感模块的方向。注意它们只取决于Guidance处理模块上的VBUS接口，而不是Guidance传感模块。
 
-The comment of each element indicates the default direction when Guidance is installed on Matrice 100. However the developers can install Guidance in any manner on any device, thus the directions might also be different.
+每个枚举值的注释说明了当Guidance以默认方式安装在Matrice 100上时该枚举值代表的方向。但开发者可以任意方式安装Guidance在任意的设备上，因此
 
 ~~~cpp
 enum e_vbus_index
 {
-    e_vbus1 = 1,    // front on M100 
-    e_vbus2 = 2,    // right on M100 
-    e_vbus3 = 3,    // rear on M100 
-    e_vbus4 = 4,    // left on M100 
-    e_vbus5 = 0     // down on M100 
+    e_vbus1 = 1,        // M100上为前视
+    e_vbus2 = 2,        // M100上为右视
+    e_vbus3 = 3,        // M100上为后视
+    e_vbus4 = 4,        // M100上为左视
+    e_vbus5 = 0         // M100上为下视
 };
 ~~~
 
 ### e_image_data_frequecy
 
-**Description:**  Define frequency of image data. The supported frequencies are: 5Hz, 10Hz, 20Hz. With more images selected, smaller frequency should be selected.
+**描述:** 定义图像数据的频率。可选的频率有:5Hz, 10Hz, 20Hz. 订阅的图像越多，传输的频率就越低。
 
 ~~~cpp
 enum e_image_data_frequecy
 {
-    e_frequecy_5 =  0,  // frequecy of image data: 5Hz 
-    e_frequecy_10 = 1,  // frequecy of image data: 10Hz 
-    e_frequecy_20 = 2   // frequecy of image data: 20Hz 
+    e_frequecy_5  = 0,  // frequecy of image data: 5Hz  
+    e_frequecy_10 = 1,  // frequecy of image data: 10Hz  
+    e_frequecy_20 = 2   // frequecy of image data: 20Hz  
 };
 ~~~
 
 ### e_guidance_event
 
-**Description:**  Define event type of callback
+**描述:** 定义回调的事件类型。
 
 ~~~cpp
 enum e_guidance_event
 {
-    e_image = 0,                // called back when image comes 
-    e_imu,                      // called back when imu comes 
-    e_ultrasonic,               // called back when ultrasonic comes 
-    e_velocity,                 // called back when velocity data comes 
-    e_obstacle_distance,        // called back when obstacle data comes 
-    e_motion,                   // called back when global position comes
+    e_image = 0,            // called back when image comes 
+    e_imu,                  // called back when imu comes 
+    e_ultrasonic,           // called back when ultrasonic comes 
+    e_velocity,             // called back when velocity data comes 
+    e_obstacle_distance,    // called back when obstacle data comes 
+    e_motion,               // called back when global position comes
     e_event_num
 };
 ~~~
 
 ### image_data
 
-**Description:**  Define image data structure. For each direction of stereo camera pair, the depth image aligns with the left greyscale image.
+**描述:** 定义图像的数据结构。每个方向的深度图与双目灰度图中的左图对齐。
 
 ~~~cpp
-
 typedef struct _image_data
 {
-    unsigned int     frame_index;                                 // frame index 
-    unsigned int     time_stamp;                                  // time stamp of image captured in ms 
-    char             *m_greyscale_image_left[CAMERA_PAIR_NUM];    // greyscale image of left camera 
+    unsigned int     frame_index;	                              // frame index 
+    unsigned int     time_stamp;	                              // time stamp of image captured in ms 
+    char             *m_greyscale_image_left[CAMERA_PAIR_NUM];	  // greyscale image of left camera 
     char             *m_greyscale_image_right[CAMERA_PAIR_NUM];   // greyscale image of right camera 
-    char             *m_depth_image[CAMERA_PAIR_NUM];             // depth image in *128 meters 
+    har             *m_depth_image[CAMERA_PAIR_NUM];	          // depth image in *128 meters 
     char             *m_disparity_image[CAMERA_PAIR_NUM];         // disparity image in *16 pixels 
 }image_data;
-
 ~~~
 
-**Explanation:**
+**解释:**
 
-1. `m_greyscale_image_left` and `m_greyscale_image_right` are both 320 hight, 240 width, 8 bit grayscale images.
-2. `m_depth_image` is 320 hight, 240 width, 16 bit depth image. Every 2 bytes describes the depth of a single point (in big-endian format), with the lower 7 bits being fraction and higher 9 bits being integer.
-3. `m_disparity_image` is 320 hight, 240 width, 16 bit depth image. Every 2 bytes describes the disparity of a single point (in big-endian format), with the lower 4 bits being fraction and higher 12 bits being integer.
+1. `m_greyscale_image_left`和`m_greyscale_image_right`都是宽320，高240的8比特灰度图。
+2. `m_depth_image`是宽320，高240的16比特深度图，每两个字节描述一个点的深度，低7位为小数位，高9位为整数位。
+3. `m_disparity_image`是宽320，高240的16比特视差图，每两个字节描述一个点的深度，低4位为小数位，高12位为整数位。
 
 ### ultrasonic_data
 
-**Description:**  Define ultrasonic data structure. `ultrasonic` is the distance between Guidance Sensor and the nearest object detected by ultrasonic sensor. The Unit is `mm`. `reliability` is the reliability of this distance measurement, with 1 meaning reliable and 0 unreliable. **Note:** Due to noise in the distance measurement, it is recommended to filter the data before use.
+**描述:** 定义超声波的数据结构。`ultrasonic`是超声波传感器检测到的最近物体的距离，单位是`mm`。`reliability`是该距离测量的可信度，1为可信，0为不可信。由于观测数据存在噪声，建议对数据进行滤波后再使用。
 
 ~~~cpp
 typedef struct _ultrasonic_data
 {
-    unsigned int     frame_index;                     // correspondent frame index 
-    unsigned int     time_stamp;                      // time stamp of correspondent image captured in ms 
-    short            ultrasonic[CAMERA_PAIR_NUM];     // distance in mm. -1 means invalid. 
-    unsigned short   reliability[CAMERA_PAIR_NUM];    // reliability of the distance data 
+    unsigned int     frame_index;    // corresponse frame index 
+    unsigned int     time_stamp;     // time stamp of corresponse image captured in ms 
+    short            ultrasonic[CAMERA_PAIR_NUM];	// distance in mm. -1 means invalid measurement. 
+    unsigned short   reliability[CAMERA_PAIR_NUM];   // reliability of the distance data 
 }ultrasonic_data;
 ~~~
 
 ### velocity
 
-**Description:**  Define velocity in body frame coordinate. Unit is `mm/s`.
+**描述:** 定义体坐标系下的速度。单位是`mm/s`。
 
 ~~~cpp
 typedef struct _velocity
 {
-    unsigned int     frame_index;             // correspondent frame index 
-    unsigned int     time_stamp;              // time stamp of correspondent image captured in ms 
-    short            vx;                      // velocity of x in mm/s 
-    short            vy;                      // velocity of y in mm/s 
-    short            vz;                      // velocity of z in mm/s 
+    unsigned int     frame_index;        // corresponse frame index 
+    unsigned int     time_stamp;         // time stamp of corresponse image captured in ms 
+    short            vx;                 // velocity of x in mm/s
+    short            vy;                 // velocity of y in mm/s 
+    short            vz;                 // velocity of z in mm/s 
 }velocity;
 ~~~
 
+
 ### obstacle_distance
 
-**Description:**  Define obstacle distance calculated by fusing vision and ultrasonic sensors. Unit is `cm`.
+**描述:** 定义由视觉和超声波融合得到的障碍物距离。单位是`cm`。
 
 ~~~cpp
 typedef struct _obstacle_distance
 {
-    unsigned int     frame_index;                // correspondent frame index 
-    unsigned int     time_stamp;                 // time stamp of correspondent image captured in ms 
-    unsigned short   distance[CAMERA_PAIR_NUM];  // distance of obstacle in cm 
+    unsigned int     frame_index;    // corresponse frame index 
+    unsigned int     time_stamp;     // time stamp of corresponse image captured in ms 
+    unsigned short   distance[CAMERA_PAIR_NUM];  // distance of obstacle in cm
 }obstacle_distance;
 ~~~
 
-### imu data
+### imu
 
-**Description:**  Define IMU data structure. Unit of acceleration is `m/s^2`.
+**描述:** 定义IMU数据结构。加速度单位为`m/s^2`。
 
 ~~~cpp
 typedef struct _imu
 {
-    unsigned int     frame_index;             // correspondent frame index 
-    unsigned int     time_stamp;              // time stamp of correspondent image captured in ms 
-    float            acc_x;                   // acceleration of x in unit of m/s^2 
-    float            acc_y;                   // acceleration of y in unit of m/s^2 
+    unsigned int     frame_index;             // corresponse frame index 
+    unsigned int     time_stamp;              // time stamp of corresponse image captured in ms 
+    float            acc_x;                   // acceleration of x in unit of m/s^2
+    float            acc_y;                   // acceleration of y in unit of m/s^2
     float            acc_z;                   // acceleration of z in unit of m/s^2
-    float            q[4];                    // quaternion: [w,x,y,z] 
+    float            q[4];                    // quaternion: [w,x,y,z]
 }imu;
 ~~~
 
-### stereo_cali
 
-**Description:**  Calibration parameters of cameras. All values will be zero if the corresponding sensor is not online.
+###   stereo_cali
+
+**描述:**  摄像头的标定参数。如果某个方向的传感器不在线，则所有值为0.
 
 ~~~cpp
 typedef struct _stereo_cali
 {
-    float cu;           // x position of focal center in units of pixels 
-    float cv;           // y position of focal center in units of pixels 
-    float focal;        // focal length in units of pixels 
-    float baseline;     // baseline of stereo cameras in units of meters 
+    float cu;			// x position of focal center in units of pixels 
+    float cv;			// y position of focal center in units of pixels 
+    float focal;		// focal length in units of pixels 
+    float baseline;		// baseline of stereo cameras in units of meters 
     _stereo_cali() { }
     _stereo_cali(float _cu, float _cv, float _focal, float _baseline)
     {
@@ -303,18 +301,18 @@ typedef struct _stereo_cali
 }stereo_cali;
 ~~~
 
-### exposure_param
+###   exposure_param
 
-**Description:**  Parameters of camera exposure. When m_expo_time = m_expected_brightness=0, return to default AEC. 
+**描述:**  摄像头的曝光参数。当m_expo_time = m_expected_brightness=0时，变成默认的自动曝光控制。 
 
 ~~~cpp
 typedef struct _exposure_param
 {
-    float         m_step;       // adjustment step for auto exposure control (AEC). Default is 10.
-    float         m_exposure_time;  // constant exposure time in mini-seconds. Range is 0.1~20. Default is 7.25.
+    float	      m_step;		// adjustment step for auto exposure control (AEC). Default is 10.
+    float		  m_exposure_time;	// constant exposure time in mini-seconds. Range is 0.1~20. Default is 7.25.
     unsigned int  m_expected_brightness;// constant expected brightness for AEC. Range is 50~200. Default is 85.
-    unsigned int  m_is_auto_exposure;   // 1: auto exposure; 0: constant exposure
-    int           m_camera_pair_index;  // index of Guidance Sensor
+    unsigned int  m_is_auto_exposure;	// 1: auto exposure; 0: constant exposure
+    int           m_camera_pair_index;	// index of Guidance Sensor
     _exposure_param(){
         m_step = 10;
         m_exposure_time = 7.68;
@@ -325,9 +323,9 @@ typedef struct _exposure_param
 }exposure_param;
 ~~~
 
-### motion data
+### motion
 
-**Description:**  Define global motion data. Unit is `m` for position and `m/s` for velocity.
+**描述:**  定义全局位置数据结构。位置单位为`m`，速度单位为`m/s`.
 
 ~~~cpp
 typedef struct _motion
@@ -335,7 +333,7 @@ typedef struct _motion
     unsigned int     frame_index;
     unsigned int     time_stamp;
 
-    int              corresponding_imu_index;
+    int	             corresponding_imu_index;
 
     float            q0;
     float            q1;
@@ -361,55 +359,53 @@ typedef struct _motion
 } motion;
 ~~~
 
-
 ## API
 
-### Overview
+### 概述
 
-The Guidance API provides configuration and control methods for Guidance with C interface. Here is an overview of the key methods available in this API.
+对USB接口，Guidance API提供了配置和控制Guidance的C接口。下面是该API提供的关键方法的概览。
 
-Please reference the protocol of Section 2.1.2 and also the example code of `uart_example` when using UART transfer type.
+当使用UART传输时请参考第2.​​1.2节的协议，以及`uart_example`示例代码。
 
-- initialization
-	- [reset_config](#reset-config)
-	- [init_transfer](#init-transfer)
+- 初始化
+    - [reset_config](#reset-config)
+    - [init_transfer](#init-transfer)
 
-- subscribe data
-	- [select_imu](#select-imu)
-	- [select_ultrasonic](#select-ultrasonic)
-	- [select_velocity](#select-velocity)
-	- [select_obstacle_distance ](#select-obstacle-distance)
-	- [set_image_frequecy](#set-image-frequecy)
-	- [select_depth_image](#select-depth-image)
-	- [select_disparity_image](#select-disparity-image)
-	- [select_greyscale_image](#select-greyscale-image)
-	- [select_motion](#select-motion)
+- 订阅数据
+    - [select_imu](#select-imu)
+    - [select_ultrasonic](#select-ultrasonic)
+    - [select_velocity](#select-velocity)
+    - [select_obstacle_distance ](#select-obstacle-distance)
+    - [set_image_frequecy](#set-image-frequecy)
+    - [select_depth_image](#select-depth-image)
+    - [select_disparity_image](#select-disparity-image)
+    - [select_greyscale_image](#select-greyscale-image)
+    - [select_motion](#select-motion)
 
-- set callback and exposure
-	- [set_sdk_event_handler](#set-sdk-event-handler)
-	- [set_exposure_param](#set-exposure-param)
+- 设置回调函数和曝光
+    - [set_sdk_event_handler](#set-sdk-event-handler)
+    - [set_exposure_param](#set-exposure-param)
 
-- get data 
-	- [get_online_status](#get-online-status)
-	- [get_stereo_cali](#get-stereo-cali)
-	- [get_device_type](#get-device-type) 
-	- [get_image_size](#get-image-size)
+- 获取数据
+    - [get_online_status](#get-online-status)
+    - [get_stereo_cali](#get-stereo-cali)
+    - [get_device_type](#get-device-type) 
+    - [get_image_size](#get-image-size)
 
-- transfer control
-	- [start_transfer](#start-transfer)
-	- [stop_transfer](#stop-transfer)
-	- [release_transfer](#release-transfer)
-	- [wait_for_board_ready](#wait-for-board-ready)
+- 传输控制
+    - [start_transfer](#start-transfer)
+    - [stop_transfer](#stop-transfer)
+    - [release_transfer](#release-transfer)
+    - [wait_for_board_ready](#wait-for-board-ready)
 
-### Method
+### 方法
 
-#### user_call_back
 
-- **Description:**  Callback function prototype. The developer must write his/her own callback function in this form. In order to achieve best performance, it is suggested not performing any time-consuming processing in the callback function, but only copying the data out. Otherwise the transfer frequency might be slowed down.  
-- **Parameters:**  `event_type` use it to identify the data:image,imu,ultrasonic,velocity or obstacle distance
-- **Parameters:**  `data_len` length of the input data
-- **Parameters:**  `data` data read from Guidance.
-- **Return:**   `error code`. Non-zero if error occurs.
+#### user_callback
+
+- **描述:** 回调函数的原型。 开发者的回调函数必须按照该原型编写。为了达到最佳性能，建议在回调函数中不执行任何耗时的处理，只复制数据。否则，传输频率可能会有所降低。
+- **参数:** `event_type`使用它来识别数据类型:图像，IMU，超声波，速度或障碍物距离;`data_len`输入数据的长度; `data`从Guidance输入的数据。
+- **返回:** `错误码`。如果发生错误为非零。
 
 ~~~cpp
 typedef int (*user_call_back)( int event_type, int data_len, char *data );
@@ -417,80 +413,87 @@ typedef int (*user_call_back)( int event_type, int data_len, char *data );
 
 #### reset_config
 
-- **Description:**   Clear subscribed configure, if you want to subscribe data different from last time.
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 清除订阅的配置，如果你想订阅跟上次不同的数据。
+- **参数:** 空
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int reset_config( void );
+SDK_API int reset_config ( void );
 ~~~
+
 
 #### init_transfer
 
-- **Description:**  Initialize Guidance and create data transfer thread.
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 初始化Guidance，创建数据传输线程。
+- **参数:** 空
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int init_transfer( void );
+SDK_API int init_transfer ( void );
 ~~~
 
 #### select_imu
 
-- **Description:**   Subscribe IMU data. In standard mode, IMU data can only be output when Guidance is connected to DJI N1 flight controller. While in DIY mode, IMU data can always be output without connecting to a flight controller.
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 订阅IMU数据。在标准模式下，必须连接DJI N1飞控才能输出IMU数据。在自定义模式下则不需要连接飞控就可以输出。
+- **参数:** 空
+- **返回:** 空
 
 ~~~cpp
-SDK_API void select_imu( void );
+SDK_API void select_imu ( void );
 ~~~
 
 #### select_ultrasonic
 
-- **Description:**   Subscribe ultrasonic data.
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 订阅超声波数据。
+- **参数:** 空
+- **返回:** 空
 
 ~~~cpp
-SDK_API void select_ultrasonic( void );
+SDK_API void select_ultrasonic ( void );
 ~~~
 
 #### select_velocity
 
-- **Description:**   subscribe velocity data, i.e. velocity of Guidance in body coordinate system.
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 订阅速度数据。注意该速度是体坐标系下的速度。
+- **参数:** 空
+- **返回:** 空
 
 ~~~cpp
-SDK_API void select_velocity( void );
+SDK_API void select_velocity ( void );
 ~~~
 
 #### select_obstacle_distance
 
-- **Description:**   Subscribe obstacle distance.
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 订阅障碍物距离数据。
+- **参数:** 空
+- **返回:** 空
 
 ~~~cpp
-SDK_API void select_obstacle_distance( void );
+SDK_API void select_obstacle_distance ( void );
 ~~~
 
-#### select_greyscale_image
+#### set_image_frequecy
 
-- **Description:**   Subscribe rectified greyscale image.
-- **Parameters:**  `camera_pair_index` index of camera pair selected
-- **Parameters:**  `is_left` whether the image data selected is left
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 设定图像传输的频率。
+**注意:** 由于USB的带宽限制，如果订阅太多的图像（灰度图像或深度图像），应设置较小的频率，否则在SDK不能保证图像传输的连续性。
+- **参数:** `frequency` 图像传输的频率。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int select_greyscale_image( e_vbus_index camera_pair_index, bool is_left );
+SDK_API int set_image_frequecy ( e_image_data_frequecy frequecy );
 ~~~
 
 #### select_depth_image
 
-- **Description:**   Subscribe depth image.
-- **Parameters:**  `camera_pair_index` index of camera pair selected
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 订阅深度图像数据。
+- **参数:** `camera_pair_index` 选定双目相机对的索引。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int select_depth_image( e_vbus_index camera_pair_index );
+SDK_API int select_depth_image ( e_vbus_index camera_pair_index );
 ~~~
 
-**Example:**
+**示例:**
 
 ~~~cpp
 #include "DJI_guidance.h"
@@ -500,7 +503,7 @@ SDK_API int select_depth_image( e_vbus_index camera_pair_index );
 #include <string>
 
 e_vbus_index sensor_id = e_vbus1;
-Mat     g_depth;
+Mat	    g_depth;
 int my_callback(int data_type, int data_len, char *content)
 {
     g_lock.enter();
@@ -525,8 +528,8 @@ int main(int argc, const char** argv)
 
     err_code = select_depth_image( sensor_id );
     
-    err_code = set_sdk_event_handler( my_callback );    
-    err_code = start_transfer();    
+    err_code = set_sdk_event_handler( my_callback );	
+    err_code = start_transfer();	
     
     while(1)
     {
@@ -548,15 +551,15 @@ int main(int argc, const char** argv)
 
 #### select_disparity_image
 
-- **Description:**   Subscribe disparity image, which can be filtered with functions such as filterSpeckles.
-- **Parameters:**  `camera_pair_index` index of camera pair selected
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 订阅视差图像数据。视差图像可以用filterSpeckles等函数进行滤波处理。
+- **参数:** `camera_pair_index` 选定双目相机对的索引。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int select_disparity_image( e_vbus_index camera_pair_index );
+SDK_API int select_disparity_image ( e_vbus_index camera_pair_index );
 ~~~
 
-**Example:**
+**示例:**
 
 ~~~cpp
 #include "DJI_guidance.h"
@@ -566,7 +569,7 @@ SDK_API int select_disparity_image( e_vbus_index camera_pair_index );
 #include <string>
 
 e_vbus_index sensor_id = e_vbus1;
-Mat     g_disparity;
+Mat		g_disparity;
 int my_callback(int data_type, int data_len, char *content)
 {
     g_lock.enter();
@@ -590,9 +593,9 @@ int main(int argc, const char** argv)
     int err_code = init_transfer(); //wait for board ready and init transfer thread
 
     err_code = select_disparity_image( sensor_id );
-    
-    err_code = set_sdk_event_handler( my_callback );    
-    err_code = start_transfer();    
+   
+    err_code = set_sdk_event_handler( my_callback );	
+    err_code = start_transfer();	
     
     while(1)
     {
@@ -612,87 +615,80 @@ int main(int argc, const char** argv)
 }
 ~~~
 
+#### select_greyscale_image
+
+- **描述:** 订阅纠正灰度图像数据。
+- **参数:** `camera_pair_index` 选择的摄像机对索引; `is_left`是否选择左边的图像:为`true`时选择左图，为`false`时选择右图。
+- **返回:** `错误码`。如果发生错误则非零。
+
+~~~cpp
+SDK_API int select_greyscale_image ( e_vbus_index camera_pair_index, bool is_left );
+~~~
+
 #### select_motion
 
-- **Description:**   Subscribe global motion data, i.e. velocity and position of Guidance in global coordinate system.
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 订阅全局运动信息，即全局坐标系下Guidance的速度和位置。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
 SDK_API void select_motion( void );
 ~~~
 
-#### set_image_frequecy
+#### set_sdk_event_handler
 
-- **Description:**  Set frequecy of image transfer. **Note**: The bandwidth of USB is limited. If you subscribe too many images (greyscale image or depth image), the frequency should be set relatively small, otherwise the SDK cannot guarantee the continuity of image transfer.
-- **Parameters:**  `frequecy` frequecy of image transfer
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 设置回调函数指针。当有数据从Guidance传过来时，回调函数将被传输线程调用。
+- **参数:** `handler` 回调函数指针。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int set_image_frequecy( e_image_data_frequecy frequecy );
+SDK_API int set_sdk_event_handler ( user_call_back handler );
 ~~~
 
 #### start_transfer
 
-- **Description:**  Inform Guidance to start data transfer. 
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 通知Guidance开始传输数据。
+- **参数:** 空。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int start_transfer( void );
+SDK_API int start_transfer ( void );
 ~~~
 
 #### stop_transfer
 
-- **Description:**  Inform Guidance to stop data transfer.   
-- **Return:**  `error code`. Non-zero if error occurs.
+- **描述:** 通知Guidance停止数据传输。
+- **参数:** 空。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int stop_transfer( void );
+SDK_API int stop_transfer ( void );
 ~~~
 
 #### release_transfer
 
-- **Description:**  Release the data transfer thread. 
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 释放数据传输线程。
+- **参数:** 空。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int release_transfer( void );
-~~~
-
-#### set_sdk_event_handler
-
-- **Description:**   Set callback function handler. When data from Guidance comes, it will be called by data transfer thread.
-- **Parameters:**  `handler` function pointer to callback function.
-- **Return:**  `error code`. Non-zero if error occurs.
-
-~~~cpp
-SDK_API int set_sdk_event_handler( user_call_back handler );
-~~~
-
-#### get_stereo_cali
-
-- **Description:**  Get stereo calibration parameters.
-- **Parameters:**  `stereo_cali_pram` Array of calibration parameters for all sensors. 
-- **Return:**  `error code`. Non-zero if error occurs.
-
-~~~cpp
-SDK_API int get_stereo_cali( stereo_cali stereo_cali_pram[CAMERA_PAIR_NUM]);
+SDK_API int release_transfer ( void );
 ~~~
 
 #### get_online_status
 
-- **Description:**  Get the online status of Guidance sensors.
-- **Parameters:**  `online_status` Array of online status for all sensors.
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 获取Guidance传感模块的在线状态。
+- **参数:** `online_status[CAMERA_PAIR_NUM]` Guidance传感模块的在线状态的数组。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int get_online_status(int online_status[CAMERA_PAIR_NUM]);
+SDK_API int get_online_status (int online_status[CAMERA_PAIR_NUM] );
 ~~~
 
 #### get_device_type
 
-- **Description:**  Get the type of devices. Currently only support one type of device: Guidance. 
-- **Parameters:**  `device_type` Device type.
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 获取设备类型。目前只支持Guidance一种设备。
+- **参数:** `device_type` 设备类型。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
 SDK_API int get_device_type(e_device_type* device_type);
@@ -700,31 +696,31 @@ SDK_API int get_device_type(e_device_type* device_type);
 
 #### get_image_size
 
-- **Description:**  Get the size of image data.
-- **Parameters:**  `width` Image width.
-- **Parameters:**  `height` Image height.
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 获取图像大小。
+- **参数:** `width` 图像宽度。
+- **参数:** `height` 图像高度。
+- **返回:** `错误码`。如果发生错误则非零。
 
 ~~~cpp
-SDK_API int get_image_size(int* width, int* height);
+SDK_API	int get_image_size(int* width, int* height);
 ~~~
 
-#### wait_for_board_ready
+####  wait_for_board_ready
 
-- **Description:**  Wait for board ready signal. This function waits 20 seconds for Guidance board to get started. If 20 seconds pass and the board is still not ready, return a timeout error code. The users usually do not need to use this function, as it is already called in init_transfer.
-- **Return:**  `error code`. Zero if succeed, otherwise e_timout.
+- **描述:** 等待Guidance处理模块的准备信号。该函数最多会等待20秒，如果20秒内没有收到准备好信号，则返回一个超时错误。开发者一般不需要使用这个函数，因为它已经在init_transfer中被调用。
+- **参数:** 空。
+- **返回:**  `错误码`。如果发生错误则非零。
 
 ~~~cpp
 SDK_API int wait_for_board_ready();
 ~~~
 
-#### set_exposure_param
+####  set_exposure_param
 
-- **Description:**  Set exposure mode and parameters.
-- **Parameters:**  `param` pointer of exposure parameter struct.
-- **Return:**   `error code`. Non-zero if error occurs.
+- **描述:** 设置曝光模式及参数。
+- **参数:** `param` 曝光参数结构体的指针。
+- **返回:**  `错误码`。如果发生错误则非零。
 
 ~~~cpp
 SDK_API int set_exposure_param( exposure_param *param );
 ~~~
-

@@ -7,7 +7,7 @@
       
     -
       title: Run examples
-      path: /application-development-guides/run-examples.html  
+      path: /quick-start/run-examples.html  
 -
   title: INTRODUCTION
   list:
@@ -29,4 +29,11 @@
     -
       title: Building a Visual Tracking Project
       path: /tutorials/index.html
+
+- title: Support
+
+  list:
+    - 
+      title: FAQ
+      path: /faq/index.html
 
