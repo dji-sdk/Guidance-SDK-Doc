@@ -1,6 +1,7 @@
 ---
 title: Guidance SDK Reference
 date: 2016-06-24
+keywords: [SDK Reference, HAL, USB, UART, Data Types, Data Structures, API]
 ---
 
 ## Background

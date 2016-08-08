@@ -1,6 +1,7 @@
 ---
 title: Get Started 
 date: 2016-06-24
+keywords: [get started]
 ---
 
 Official Guidance SDK package for accessing the rich categories of output data from Guidance via USB and UART, and configure your Guidance all by your demand.
@@ -47,3 +48,4 @@ Examples of USB and UART can be found in *examples/usb\_example*, *examples/uart
 Notice that, reading and writing Guidance USB port in Linux requires root authority. To save the trouble of typing `sudo` every time running Guidance SDK applications, it is suggested to add a rule to `/etc/udev/rules.d` directory, which can be found in **doc/51-guidance.rules**. Or typing from terminal the following line
 
 	sudo sh -c 'echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"fff0\", ATTR{idProduct}==\"d009\", MODE=\"0666\"" > /etc/udev/rules.d/51-guidance.rules'
+	

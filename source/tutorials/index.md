@@ -1,6 +1,7 @@
 ---
 title: Building a Visual Tracking Project 
 date: 2016-06-24
+keywords: [visual tracking, tutorial]
 ---
 
 This tutorial gives an example of building a visual tracking project using Guidance SDK step by step. It supports Windows and Linux.

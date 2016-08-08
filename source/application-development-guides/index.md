@@ -1,6 +1,7 @@
 ---
 title: Guidance SDK Developer Guide 
 date: 2016-06-24
+keywords: [SDK package download, environment setup, opencv]
 ---
 
 ## SDK Package Download
