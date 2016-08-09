@@ -1,6 +1,7 @@
 ---
 title: Guidance SDK 开发者指南
 date: 2016-06-24
+keywords: [SDK 包下载, 环境配置, opencv]
 ---
 
 ## SDK包下载

@@ -1,6 +1,7 @@
 ---
 title: 快速入门
 date: 2016-06-24
+keywords: [快速入门]
 ---
 
 Guidance SDK可以让开发者通过Guidance的USB口和串口来获取丰富的传感器数据，以及按照自己的需要来灵活配置Guidance。

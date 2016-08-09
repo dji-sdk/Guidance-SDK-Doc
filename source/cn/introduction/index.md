@@ -1,6 +1,7 @@
 ---
 title: Guidance SDK Reference 
 date: 2016-06-24
+keywords: [SDK Reference, USB, 串口, 数据类型, 数据结构, API]
 ---
 
 ## 背景

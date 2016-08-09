@@ -1,6 +1,7 @@
 ---
 title: DJI Guidance SDK FAQ
 date: 2016-06-24
+keywords: []
 ---
 
 ### Guidance SDK 包含些什么内容？

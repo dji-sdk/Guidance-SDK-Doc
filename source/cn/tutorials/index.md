@@ -1,6 +1,7 @@
 ---
 title: 创建一个视觉跟踪工程
 date: 2016-06-24
+keywords: [视觉跟踪, 教程]
 ---
 
 这里我们要实现的功能是利用Guidance SDK中的API，通过USB从Guidance中读取图像数据，使用camshift完成一个视觉跟踪的应用。该教程支持Windows和Ubuntu系统。

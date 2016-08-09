@@ -1,6 +1,7 @@
 ---
 title: Run examples 
 date: 2016-06-24
+keywords: [usb example, UART example]
 ---
 
 Guidance SDK have provided examples to get data from Guidance system. This section guides you how to execute these examples.

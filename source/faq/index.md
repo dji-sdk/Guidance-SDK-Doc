@@ -1,6 +1,7 @@
 ---
 title: DJI Guidance SDK FAQ
 date: 2016-06-24
+keywords: []
 ---
 
 ### What information is provided by Guidance SDK? 
