@@ -10,11 +10,13 @@
     "gulp": "node ./node_modules/gulp/bin/gulp.js"
   },
   "dependencies": {
+    "co": "^4.6.0",
     "hexo": "^3.2.0",
     "hexo-renderer-markdown-it": "^3.4.1",
     "hexo-renderer-sass": "^0.2.0",
     "hexo-server": "^0.2.0",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "node-fetch": "^1.6.0"
   },
   "devDependencies": {
     "ali-oss": "^4.4.4",
