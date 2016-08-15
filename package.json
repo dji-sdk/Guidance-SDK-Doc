@@ -16,9 +16,7 @@
     "hexo-renderer-sass": "^0.2.0",
     "hexo-server": "^0.2.0",
     "jade": "^1.11.0",
-    "node-fetch": "^1.6.0"
-  },
-  "devDependencies": {
+    "node-fetch": "^1.6.0",
     "ali-oss": "^4.4.4",
     "del": "^2.2.1",
     "glob": "^7.0.5",
