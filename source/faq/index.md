@@ -1,6 +1,6 @@
 ---
 title: DJI Guidance SDK FAQ
-date: 2016-06-24
+date: 2016-10-13
 keywords: [FAQ, UART]
 ---
 
@@ -16,10 +16,6 @@ keywords: [FAQ, UART]
 * [If I have questions, where can I get help?](#if-i-have-questions-where-can-i-get-help)
 * [How can I build my own project using Guidance SDK?](#how-can-i-build-my-own-project-using-guidance-sdk)
 
-**Product Related**
-
-* [Why can't I see Guidance device in "Device Manager"?](#why-cant-i-see-guidance-device-in-device-manager)
-
 **General SDK**
 
 * [How to use SDK to get data?](#how-to-use-sdk-to-get-data)
@@ -31,6 +27,12 @@ keywords: [FAQ, UART]
 * [What is the frequency limit of data transfer using USB?](#what-is-the-frequency-limit-of-data-transfer-using-usb)
 * [What are the supported baud rates using UART?](#what-are-the-supported-baud-rates-using-uart)
 * [Can I get the camera intrinsic parameters using Guidance SDK?](#can-i-get-the-camera-intrinsic-parameters-using-guidance-sdk)
+
+**Product Related**
+
+* [Why can't I see Guidance device in "Device Manager"?](#why-cant-i-see-guidance-device-in-device-manager)
+
+## Getting Started
 
 ### What information is provided by Guidance SDK? 
 
@@ -86,11 +88,7 @@ You can use the following methods to get help:
 
 You can build your own project with Guidance SDK by modifying provided demo and example projects, or build a new project following the step-by-step tutorial `How to build a visual tracking project` in **`Developer Guide`**.
 
-### Why can't I see Guidance device in "Device Manager"?
-
-Firstly, make sure Guidance Core is powered on. If you connect Guidance Core to PC by USB, then check if `Guidance Assistant` software has been successfully installed, which installs Guidance driver automatically.
-
-If you connect Guidance Core to PC by UART, then check if `USB_to_RS232` driver has been installed successfully. 
+## General SDK
 
 ### How to use SDK to get data?
 
@@ -134,3 +132,11 @@ Currently we only support baud rate **115200** when using UART.
 ### Can I get the camera intrinsic parameters using Guidance SDK?
 
 Currently we do not have this function. The next version of Guidance SDK will open the interface to get the camera intrinsic parameters.
+
+## Product Related
+
+### Why can't I see Guidance device in "Device Manager"?
+
+Firstly, make sure Guidance Core is powered on. If you connect Guidance Core to PC by USB, then check if `Guidance Assistant` software has been successfully installed, which installs Guidance driver automatically.
+
+If you connect Guidance Core to PC by UART, then check if `USB_to_RS232` driver has been installed successfully.
