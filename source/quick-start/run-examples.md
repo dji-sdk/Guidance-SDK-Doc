@@ -1,10 +1,22 @@
 ---
 title: Run examples 
 date: 2016-06-24
-keywords: [usb example, UART example]
+keywords: [usb example, UART example, OpenCV]
 ---
 
-Guidance SDK have provided examples to get data from Guidance system. This section guides you how to execute these examples.
+Guidance SDK have provided examples to get data from Guidance system. This section guides you how to execute these examples. We use OpenCV to view the images transmitted from Guidance, so it is recommended to install OpenCV on your system. However, you can also get all the data except images if you don't have OpenCV. 
+
+We provide a CMakeLists.txt for both Linux and Windows system, which automatically detects if you have OpenCV installed.
+
+## Compile USB example with CMake
+**Note**: **CMake** is required. On Windows, also **Visual Studio** is required (either 2010 or 2013). 
+1. `cd Guidance-SDK\examples\usb_example\DJI_guidance_example`
+2. `mkdir build`
+3. `cd build`
+4. `cmake ..`
+5. Build:
+	a. On Linux, simple type: `make`
+	b. On Windows, you'll see a solution file is generated. Open it and build the project dji_guidance_usb.
 
 ## Run USB example in Linux
 
@@ -77,6 +89,8 @@ Alternatively, the user can directly copy the files and configure Visual Studio 
 **3. Compile the example project.**
 
 Compile the example project using Microsoft Visual Studio.
+
+If you have OpenCV installed, also configure Visual Studio to use OpenCV by defining `HAVE_OPENCV` either in the source file `main.cpp` or in **preprocessor** setting of Visual Studio.
 
 **4. Connect the Guidance system for testing.**
 	
